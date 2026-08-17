@@ -694,7 +694,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const copyButton = activityCard.querySelector(".share-copy-button");
-    copyButton.addEventListener("click", () => copyShareLink(copyButton));
+    if (copyButton) {
+      copyButton.addEventListener("click", () => copyShareLink(copyButton));
+    }
 
     activitiesList.appendChild(activityCard);
   }
