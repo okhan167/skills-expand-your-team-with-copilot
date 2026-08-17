@@ -357,8 +357,12 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
-        document.execCommand("copy");
+        const copied = document.execCommand("copy");
         textArea.remove();
+
+        if (!copied) {
+          throw new Error("Copy command failed");
+        }
       }
 
       const originalText = button.textContent;
