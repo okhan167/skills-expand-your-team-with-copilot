@@ -304,6 +304,55 @@ document.addEventListener("DOMContentLoaded", () => {
     return details.schedule;
   }
 
+  // Escape text before placing it in HTML attributes
+  function escapeAttribute(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  // Build share links for an activity card
+  function getShareDetails(activityName, details) {
+    const shareUrl = new URL(window.location.href);
+    shareUrl.searchParams.set("activity", activityName);
+    shareUrl.hash = "activities-list";
+
+    const shareTitle = `${activityName} at Mergington High School`;
+    const shareText = `Check out ${activityName}: ${details.description}`;
+    const encodedUrl = encodeURIComponent(shareUrl.toString());
+    const encodedText = encodeURIComponent(`${shareText} ${shareUrl.toString()}`);
+    const encodedTitle = encodeURIComponent(shareTitle);
+
+    return {
+      url: shareUrl.toString(),
+      title: shareTitle,
+      text: shareText,
+      facebookUrl: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+      twitterUrl: `https://twitter.com/intent/tweet?text=${encodedText}`,
+      emailUrl: `mailto:?subject=${encodedTitle}&body=${encodedText}`,
+    };
+  }
+
+  // Copy a share link to the clipboard
+  async function copyShareLink(button) {
+    try {
+      await navigator.clipboard.writeText(button.dataset.shareUrl);
+      const originalText = button.textContent;
+      button.textContent = "Copied!";
+      button.disabled = true;
+
+      setTimeout(() => {
+        button.textContent = originalText;
+        button.disabled = false;
+      }, 2000);
+    } catch (error) {
+      console.error("Error copying share link:", error);
+      showMessage("Could not copy the link. Please try again.", "error");
+    }
+  }
+
   // Function to determine activity type (this would ideally come from backend)
   function getActivityType(activityName, description) {
     const name = activityName.toLowerCase();
@@ -498,6 +547,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
+    const shareDetails = getShareDetails(name, details);
 
     // Create activity tag
     const tagHtml = `
@@ -569,6 +619,42 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
       </div>
+      <div class="share-section" aria-label="Share ${escapeAttribute(name)}">
+        <span class="share-label">Share:</span>
+        <a
+          class="share-button"
+          href="${escapeAttribute(shareDetails.facebookUrl)}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Share ${escapeAttribute(name)} on Facebook"
+        >
+          Facebook
+        </a>
+        <a
+          class="share-button"
+          href="${escapeAttribute(shareDetails.twitterUrl)}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Share ${escapeAttribute(name)} on X"
+        >
+          X
+        </a>
+        <a
+          class="share-button"
+          href="${escapeAttribute(shareDetails.emailUrl)}"
+          aria-label="Share ${escapeAttribute(name)} by email"
+        >
+          Email
+        </a>
+        <button
+          type="button"
+          class="share-button share-copy-button"
+          data-share-url="${escapeAttribute(shareDetails.url)}"
+          aria-label="Copy a link to ${escapeAttribute(name)}"
+        >
+          Copy Link
+        </button>
+      </div>
     `;
 
     // Add click handlers for delete buttons
@@ -586,6 +672,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    const copyButton = activityCard.querySelector(".share-copy-button");
+    copyButton.addEventListener("click", () => copyShareLink(copyButton));
 
     activitiesList.appendChild(activityCard);
   }
