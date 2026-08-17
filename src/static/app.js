@@ -347,26 +347,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // Copy a share link to the clipboard
   async function copyShareLink(button) {
     try {
+      let successText = "Copied!";
+
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(button.dataset.shareUrl);
       } else {
-        const textArea = document.createElement("textarea");
-        textArea.value = button.dataset.shareUrl;
-        textArea.style.position = "fixed";
-        textArea.style.left = "-9999px";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        const copied = document.execCommand("copy");
-        textArea.remove();
-
-        if (!copied) {
-          throw new Error("Copy command failed");
-        }
+        window.prompt(
+          "Copy this activity link to share:",
+          button.dataset.shareUrl
+        );
+        successText = "Link Ready";
       }
 
       const originalText = button.textContent;
-      button.textContent = "Copied!";
+      button.textContent = successText;
       button.disabled = true;
 
       setTimeout(() => {
