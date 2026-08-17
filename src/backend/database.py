@@ -52,6 +52,7 @@ initial_activities = {
             "end_time": "08:00"
         },
         "max_participants": 20,
+        "difficulty": "Beginner",
         "participants": ["emma@mergington.edu", "sophia@mergington.edu"]
     },
     "Morning Fitness": {
@@ -118,6 +119,7 @@ initial_activities = {
             "end_time": "08:00"
         },
         "max_participants": 10,
+        "difficulty": "Intermediate",
         "participants": ["james@mergington.edu", "benjamin@mergington.edu"]
     },
     "Debate Team": {
@@ -140,6 +142,7 @@ initial_activities = {
             "end_time": "14:00"
         },
         "max_participants": 15,
+        "difficulty": "Advanced",
         "participants": ["ethan@mergington.edu", "oliver@mergington.edu"]
     },
     "Science Olympiad": {
@@ -151,6 +154,7 @@ initial_activities = {
             "end_time": "16:00"
         },
         "max_participants": 18,
+        "difficulty": "Advanced",
         "participants": ["isabella@mergington.edu", "lucas@mergington.edu"]
     },
     "Sunday Chess Tournament": {
@@ -162,6 +166,7 @@ initial_activities = {
             "end_time": "17:00"
         },
         "max_participants": 16,
+        "difficulty": "Intermediate",
         "participants": ["william@mergington.edu", "jacob@mergington.edu"]
     },
     "Manga Maniacs": {
@@ -197,4 +202,3 @@ initial_teachers = [
         "role": "admin"
     }
 ]
-
