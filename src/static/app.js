@@ -328,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return {
       url: shareUrl.toString(),
       facebookUrl: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-      twitterUrl: `https://twitter.com/intent/tweet?text=${encodedText}`,
+      twitterUrl: `https://x.com/intent/tweet?text=${encodedText}`,
       emailUrl: `mailto:?subject=${encodedTitle}&body=${encodedText}`,
     };
   }
