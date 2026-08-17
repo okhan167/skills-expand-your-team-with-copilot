@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Build share links for an activity card
   function getShareDetails(activityName, details) {
-    const shareUrl = new URL(window.location.href);
+    const shareUrl = new URL(window.location.pathname, window.location.origin);
     shareUrl.searchParams.set("activity", activityName);
     shareUrl.hash = "activities-list";
 
@@ -327,18 +327,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return {
       url: shareUrl.toString(),
-      title: shareTitle,
-      text: shareText,
       facebookUrl: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
       twitterUrl: `https://twitter.com/intent/tweet?text=${encodedText}`,
       emailUrl: `mailto:?subject=${encodedTitle}&body=${encodedText}`,
     };
   }
 
+  function initializeSharedActivity() {
+    const sharedActivity = new URLSearchParams(window.location.search).get(
+      "activity"
+    );
+
+    if (sharedActivity) {
+      searchQuery = sharedActivity;
+      searchInput.value = sharedActivity;
+    }
+  }
+
   // Copy a share link to the clipboard
   async function copyShareLink(button) {
     try {
-      await navigator.clipboard.writeText(button.dataset.shareUrl);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(button.dataset.shareUrl);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = button.dataset.shareUrl;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        textArea.remove();
+      }
+
       const originalText = button.textContent;
       button.textContent = "Copied!";
       button.disabled = true;
@@ -953,5 +975,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize app
   checkAuthentication();
   initializeFilters();
+  initializeSharedActivity();
   fetchActivities();
 });
